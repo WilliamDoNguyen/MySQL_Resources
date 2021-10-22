@@ -1,0 +1,171 @@
+Database Relations
+- one to one
+- one to many
+- many to many
+
+Normalization forms
+- Form 1: Each Column in your table can only have 1 value.
+- Form 2: Each Column in your table that is not a key (primary or foreign) must have unique values.
+- Form 3: You cannot have a non-key column that is dependent on another non-key column.
+
+Simple Data Types:
+VARCHAR(number of characters)
+- Used to store non-numeric values that can be up to 255 characters. It is called a VARCHAR because it can store a variable number of characters and will only use the space required for each record that is stored in the database. VARCHAR should be used for values with different character lengths like an email, first_name, or last_name.
+
+CHAR(number of characters)
+- Also used to store non-numeric values, however, it will use up all space for the set number of characters regardless of what value is added. For instance, if I set CHAR(15), and I try to store the value "Coding", it will use up the equivalent of 15 characters even though "Coding" is only 6 characters long. Char is good to use for things that will always be a given number of characters. Char would work well for something like a state_abbreviation.
+
+INT
+Used to store integers.
+- The columns that you will find mostly using the INT are things like a unique identifier for each table. The majority of rows in a table will not exceed 2.1 billion records. INT is good to use for most normal number values like a phone_number or a zip_code.
+- unsigned (positive numbers only) - can store numerical values from 0 up to 4294967295
+- signed (positive and negative numbers) - can store numerical values from -2147483648 up to 2147483647
+
+
+BIGINT
+- BIGINT would be used for columns that would need to store huge numbers. In most cases, you wouldn't need BIGINT, but if you wanted to store something like a Facebook id when using Facebook's API, since they have over a billion users the id will need to be a data type of BIGINT.
+- unsigned (again positive numbers only) - can store numerical values from 0 up to 18446744073709551615
+- signed (positive and negative numbers) - can store numerical values from 9223372036854775807 to -9223372036854775808.
+
+
+TINYINT
+- TINYINT would be good to use for numbers that will be relatively small. A good example of something that would use a TINYINT is user level identifier (0 - inactive user, 1 - active user, 9 - admin).
+- unsigned - can store numerical values from 0 up to 255
+- signed - can store numerical values from -128 up to 127
+
+FLOAT
+- Used to store floating point numbers (numbers that need to have decimal places). An example column for this would be like an item_cost.
+
+TEXT
+- Used to store a large amount of text, like a description, message, or comment. Use this for any text that VARCHAR() is too small to handle.
+
+DATETIME
+- used to store a date and time in the format YYYY-MM-DD hh:mm:ss
+
+mySQL commands:
+SELECT
+FROM
+WHERE
+
+Database Operations:
+- CRUD
+- Create
+- Read
+- Update
+- Destroy
+
+--------------------------------------------------------------------------------------------------------------
+SELECT w/ Conditionals:
+
+1) What query would you run to only get the first name of users with id of 2?
+SELECT first_name
+FROM users
+WHERE id = 2;
+
+2) What query would you run to get the last names of users with id of 2 or 3?
+SELECT last_name
+FROM users
+WHERE id = 2 OR id = 3;
+
+3) What query would you run to get all of the users with id greater than 2?
+SELECT *
+FROM users
+WHERE id > 2;
+
+4) What query would you run to get all of the users with id less than or equal to 3?
+SELECT *
+FROM users
+WHERE id <= 3;
+
+5) What query would you run to get all of the users with first names ending in "e"?
+SELECT *
+FROM users
+WHERE first_name LIKE "%e";
+
+6) What query would you run to get all of the users with first names starting in "K"?
+SELECT *
+FROM users
+WHERE first_name LIKE "K%";
+--------------------------------------------------------------------------------------------------------------
+SELECT w/ Sorting:
+
+1) What query would you run to get all of the users with the youngest users at the top of the table?
+SELECT *
+FROM users
+ORDER BY birthday DESC;
+
+2) What query would you run to get all of the users with the oldest users at the top of the table?
+SELECT *
+FROM users
+ORDER BY birthday ASC;
+
+3) What query would you run to get all of the users with the first name that ends with "e" with the youngest users at the top of the table?
+SELECT *
+FROM users
+WHERE first_name LIKE "%e"
+ORDER BY birthday DESC;
+
+4) What query would you run to get only the first names of all of the users in alphabetical order?
+SELECT first_name
+FROM users
+ORDER BY first_name;
+**The default for ORDER BY is ASC so we can leave that part out if we want the sorting to be ascending.**
+--------------------------------------------------------------------------------------------------------------
+SELECT w/ LIMIT and OFFSET:
+
+1) What query would you run to get the first 3 users?
+SELECT *
+FROM users
+LIMIT 3;
+
+2) What query would you run to get user records 3-5?
+SELECT *
+FROM users
+LIMIT 3
+OFFSET 2;
+
+3) You could also combine LIMIT and OFFSET like this:
+SELECT *
+FROM users
+LIMIT 2,3;
+--------------------------------------------------------------------------------------------------------------
+INSERT:
+
+The SQL command pattern for INSERTing records is as follows:
+INSERT INTO table_name (column_name1, column_name2)
+VALUES('column1_value', 'column2_value');
+
+i.e.:
+INSERT INTO twitter.tweets (tweet, user_id, created_at, updated_at)
+VALUES ("Yo", 1, NOW(), NOW());
+--------------------------------------------------------------------------------------------------------------
+UPDATE:
+The SQL command pattern for updating/editing records is as follows:
+UPDATE table_name SET column_name1 = 'some_value', column_name2='another_value' WHERE condition(s)
+
+***IMPORTANT: if WHERE condition is not added to the UPDATE statement, the changes will be applied to every record in the table.***
+--------------------------------------------------------------------------------------------------------------
+DELETE:
+The SQL command pattern for deleting/removing records is as follows:
+DELETE FROM table_name WHERE condition(s)
+
+***IMPORTANT: if WHERE condition is not added to the DELETE statement, it will delete all the records on the table.***
+--------------------------------------------------------------------------------------------------------------
+Joining Tables:
+
+One-to-One:
+SELECT * FROM file.customers
+JOIN file.addresses ON file.addresses.id = file.customers.address_id;
+
+One-to-Many:
+SELECT * FROM customers
+JOIN addresses ON addresses.id = customers.address_id;
+
+Many-to-Many:
+SELECT * FROM orders
+JOIN items_orders ON orders.id = items_orders.order_id
+JOIN items ON items.id = items_orders.item_id;
+
+LEFT JOIN vs. JOIN
+- LEFT JOIN will add from the first table even if there is no match in the second table.
+- JOIN will omit any results that don't have matches in both tables.
